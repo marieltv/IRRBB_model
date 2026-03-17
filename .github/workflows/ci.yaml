@@ -42,8 +42,8 @@ jobs:
           pytest tests/ -v --tb=short \
             --cov=src \
             --cov-report=term-missing \
-            --cov-report=xml:coverage.xml \
-            --cov-fail-under=80
+            --cov-report=xml:coverage.xml
+        # Coverage thresholds and omit rules defined in setup.cfg
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
