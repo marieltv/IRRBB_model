@@ -25,7 +25,7 @@ All rates stored as decimals (e.g. 0.045 = 4.5%).
 
 from __future__ import annotations
 import numpy as np
-from .time_buckets import BCBS_BUCKETS, BUCKET_MIDPOINTS, N_BUCKETS
+from .time_buckets import BUCKET_MIDPOINTS
 
 
 # ── Stylised USD base curve (approximate, late 2024) ─────────────────────────
@@ -33,8 +33,8 @@ from .time_buckets import BCBS_BUCKETS, BUCKET_MIDPOINTS, N_BUCKETS
 _REF_TENORS = [0.0,   0.25,  0.5,   1.0,   2.0,   3.0,
                5.0,   7.0,  10.0,  15.0,  20.0,  30.0]
 
-_REF_RATES  = [0.053, 0.053, 0.052, 0.050, 0.047, 0.046,
-               0.045, 0.045, 0.044, 0.044, 0.044, 0.043]
+_REF_RATES = [0.053, 0.053, 0.052, 0.050, 0.047, 0.046,
+              0.045, 0.045, 0.044, 0.044, 0.044, 0.043]
 
 
 class YieldCurve:
@@ -87,7 +87,7 @@ class YieldCurve:
         shocks_bp        : if None, uses base curve; otherwise shocks first
         """
         rates = self.shocked_rates(shocks_bp) if shocks_bp is not None \
-                else self.base_rates
+            else self.base_rates
         dfs = self.discount_factors(rates)
         return float(np.dot(bucket_cashflows, dfs))
 

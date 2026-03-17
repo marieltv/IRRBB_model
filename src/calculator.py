@@ -34,10 +34,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 import pandas as pd
-from .cashflows   import Instrument
-from .scenarios   import Scenario
+from .cashflows import Instrument
+from .scenarios import Scenario
 from .yield_curve import YieldCurve, BASE_CURVE
-from .time_buckets import N_BUCKETS, BUCKET_LABELS, BCBS_BUCKETS
+from .time_buckets import BCBS_BUCKETS
 
 
 @dataclass
@@ -56,8 +56,10 @@ class ScenarioResult:
 
     @property
     def status(self) -> str:
-        if self.is_outlier: return "OUTLIER"
-        if self.is_watch:   return "WATCH"
+        if self.is_outlier:
+            return "OUTLIER"
+        if self.is_watch:
+            return "WATCH"
         return "PASS"
 
 
@@ -84,16 +86,16 @@ class IRRBBCalculator:
         outlier_threshold: float = 0.15,
         watch_threshold:   float = 0.10,
     ):
-        self.assets      = assets
+        self.assets = assets
         self.liabilities = liabilities
-        self.tier1       = tier1_capital
-        self.curve       = yield_curve or BASE_CURVE
+        self.tier1 = tier1_capital
+        self.curve = yield_curve or BASE_CURVE
         self.outlier_thr = outlier_threshold
-        self.watch_thr   = watch_threshold
+        self.watch_thr = watch_threshold
 
         # Pre-compute bucketed cash flows for each instrument (expensive, do once)
         self._asset_cfs = np.array([i.bucket_cashflows() for i in assets])      # (n_assets, 19)
-        self._liab_cfs  = np.array([i.bucket_cashflows() for i in liabilities]) # (n_liabs,  19)
+        self._liab_cfs = np.array([i.bucket_cashflows() for i in liabilities])  # (n_liabs,  19)
 
     # ── EVE ───────────────────────────────────────────────────────────────────
 
@@ -107,8 +109,8 @@ class IRRBBCalculator:
         cf_matrix @ discount_factors  =  vector dot product per instrument.
         """
         rates = self.curve.shocked_rates(shocks_bp) if shocks_bp is not None \
-                else self.curve.base_rates
-        dfs   = self.curve.discount_factors(rates)  # shape (N_BUCKETS,)
+            else self.curve.base_rates
+        dfs = self.curve.discount_factors(rates)  # shape (N_BUCKETS,)
         return cf_matrix @ dfs                       # shape (n_instruments,)
 
     def calc_eve(self, scenario: Scenario) -> tuple[float, float, float]:
@@ -117,13 +119,13 @@ class IRRBBCalculator:
         ΔEVE = [PV_shocked(assets) - PV_base(assets)]
                - [PV_shocked(liabs) - PV_base(liabs)]
         """
-        pv_base_a    = self._pv_matrix(self._asset_cfs, None)
+        pv_base_a = self._pv_matrix(self._asset_cfs, None)
         pv_shocked_a = self._pv_matrix(self._asset_cfs, scenario.shocks_bp)
-        pv_base_l    = self._pv_matrix(self._liab_cfs,  None)
+        pv_base_l = self._pv_matrix(self._liab_cfs,  None)
         pv_shocked_l = self._pv_matrix(self._liab_cfs,  scenario.shocks_bp)
 
         eve_asset = float(np.sum(pv_shocked_a - pv_base_a))
-        eve_liab  = float(np.sum(pv_shocked_l - pv_base_l))
+        eve_liab = float(np.sum(pv_shocked_l - pv_base_l))
         return eve_asset - eve_liab, eve_asset, eve_liab
 
     # ── NII ───────────────────────────────────────────────────────────────────
@@ -137,9 +139,9 @@ class IRRBBCalculator:
         total = 0.0
         for inst in instruments:
             if inst.instrument_type in ("bullet_floating", "demand_deposit"):
-                bucket     = inst.cashflows[0].bucket   # single repricing CF
-                shock_dec  = scenario.shock_at_bucket(bucket) / 10_000
-                total     += sign * inst.notional * shock_dec
+                bucket = inst.cashflows[0].bucket   # single repricing CF
+                shock_dec = scenario.shock_at_bucket(bucket) / 10_000
+                total += sign * inst.notional * shock_dec
         return total
 
     def calc_nii(self, scenario: Scenario) -> tuple[float, float, float]:
@@ -155,18 +157,18 @@ class IRRBBCalculator:
         eve_pct = abs(delta_eve) / self.tier1 * 100
 
         return ScenarioResult(
-            scenario      = scenario,
-            delta_nii     = delta_nii,
-            delta_eve     = delta_eve,
-            delta_eve_pct = eve_pct,
-            nii_asset     = nii_a,
-            nii_liability = nii_l,
-            eve_asset     = eve_a,
-            eve_liability = eve_l,
-            tier1         = self.tier1,
-            is_outlier    = eve_pct > self.outlier_thr * 100,
-            is_watch      = (eve_pct > self.watch_thr * 100)
-                            and (eve_pct <= self.outlier_thr * 100),
+            scenario=scenario,
+            delta_nii=delta_nii,
+            delta_eve=delta_eve,
+            delta_eve_pct=eve_pct,
+            nii_asset=nii_a,
+            nii_liability=nii_l,
+            eve_asset=eve_a,
+            eve_liability=eve_l,
+            tier1=self.tier1,
+            is_outlier=eve_pct > self.outlier_thr * 100,
+            is_watch=(eve_pct > self.watch_thr * 100)
+            and (eve_pct <= self.outlier_thr * 100),
         )
 
     def run_all(self, scenarios: list[Scenario]) -> list[ScenarioResult]:
@@ -180,10 +182,12 @@ class IRRBBCalculator:
         for b in BCBS_BUCKETS:
             a = sum(i.notional for i in self.assets
                     if any(cf.bucket == b.index for cf in i.cashflows))
-            l = sum(i.notional for i in self.liabilities
-                    if any(cf.bucket == b.index for cf in i.cashflows))
+            liab_total = sum(
+                i.notional for i in self.liabilities
+                if any(cf.bucket == b.index for cf in i.cashflows)
+            )
             rows.append({"bucket": b.label, "assets": a,
-                         "liabilities": l, "net_gap": a - l})
+                         "liabilities": liab_total, "net_gap": a - liab_total})
         return pd.DataFrame(rows).set_index("bucket")
 
     # ── Instrument-level EVE detail ───────────────────────────────────────────
@@ -191,15 +195,14 @@ class IRRBBCalculator:
     def instrument_eve_detail(self, scenario: Scenario) -> pd.DataFrame:
         """Per-instrument ΔEVE breakdown — useful for attribution."""
         rows = []
-        for sign, instruments, cf_matrix in (
-            (+1, self.assets,      self._asset_cfs),
+        sides = [
+            (+1, self.assets, self._asset_cfs),
             (-1, self.liabilities, self._liab_cfs),
-        ):
-            pv_base    = self._pv_matrix(cf_matrix, None)
+        ]
+        for sign, instruments, cf_matrix in sides:
+            pv_base = self._pv_matrix(cf_matrix, None)
             pv_shocked = self._pv_matrix(cf_matrix, scenario.shocks_bp)
-            for i, (inst, pv_b, pv_s) in enumerate(
-                zip(instruments, pv_base, pv_shocked)
-            ):
+            for inst, pv_b, pv_s in zip(instruments, pv_base, pv_shocked):
                 delta_pv = sign * (pv_s - pv_b)
                 rows.append({
                     "side":          inst.side.upper(),

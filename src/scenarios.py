@@ -18,7 +18,7 @@ Source: BCBS 368, Annex 2, Table 1.
 from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
-from .time_buckets import BCBS_BUCKETS, BUCKET_LABELS, BUCKET_MIDPOINTS
+from .time_buckets import BUCKET_LABELS, BUCKET_MIDPOINTS
 
 
 # Reference tenors from BCBS 368 Annex 2 Table 1 (years)

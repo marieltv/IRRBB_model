@@ -38,7 +38,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 import numpy as np
 import pandas as pd
-from .time_buckets import years_to_bucket, BCBS_BUCKETS, N_BUCKETS, BUCKET_MIDPOINTS
+from .time_buckets import years_to_bucket, N_BUCKETS, BUCKET_MIDPOINTS
 
 
 InstrumentType = Literal[
@@ -84,9 +84,9 @@ class Instrument:
     coupon_pct:       float
     instrument_type:  InstrumentType
     maturity_years:   float
-    payment_freq:     int   = 2          # semi-annual default
+    payment_freq:     int = 2          # semi-annual default
     repricing_years:  float = None       # floating instruments only
-    side:             str   = "asset"
+    side:             str = "asset"
     cashflows:        list[CashFlow] = field(default_factory=list, repr=False)
 
     def __post_init__(self):
