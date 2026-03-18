@@ -211,7 +211,7 @@ with st.sidebar:
     f"</div>",
     unsafe_allow_html=True,
 )
-    )
+    
     st.divider()
 
     st.markdown("<p class='section-label'>Active Scenario</p>",
