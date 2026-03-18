@@ -150,9 +150,9 @@ html, body, [class*="css"] {{
     border-radius: 4px;
 }}
 [data-testid="stNumberInput"] input {{
-    background: {BG};
-    border: 1px solid {BORDER};
-    color: {TEXT};
+    background: {SIDEBAR_INPUT} !important;
+    border: 1px solid {SIDEBAR_INPUT_BORDER} !important;
+    color: {SIDEBAR_TEXT} !important;
     font-family: 'IBM Plex Mono', monospace;
     border-radius: 4px;
 }}
@@ -198,9 +198,19 @@ with st.sidebar:
         "Tier 1 Capital (USD M)",
         value=500, min_value=50, max_value=10000, step=50,
     )
-    st.caption(
-        f"Outlier threshold: **${tier1 * 0.15:.0f}M** (15% of T1)  \n"
-        f"Watch threshold: **${tier1 * 0.10:.0f}M** (10% of T1)"
+    st.markdown(
+    f"<div style='font-size:11px;line-height:1.8;margin-top:4px'>"
+    f"<span style='color:{SIDEBAR_DIM}'>Outlier threshold: </span>"
+    f"<span style='color:{SIDEBAR_TEXT};font-weight:600;font-family:monospace'>"
+    f"${tier1 * 0.15:.0f}M</span>"
+    f"<span style='color:{SIDEBAR_DIM}'> (15% of T1)</span><br>"
+    f"<span style='color:{SIDEBAR_DIM}'>Watch threshold: </span>"
+    f"<span style='color:{SIDEBAR_TEXT};font-weight:600;font-family:monospace'>"
+    f"${tier1 * 0.10:.0f}M</span>"
+    f"<span style='color:{SIDEBAR_DIM}'> (10% of T1)</span>"
+    f"</div>",
+    unsafe_allow_html=True,
+)
     )
     st.divider()
 
