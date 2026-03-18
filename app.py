@@ -42,9 +42,10 @@ PLOTLY_BASE = dict(
     paper_bgcolor=BG, plot_bgcolor=BG2,
     font=dict(family="monospace", color=TEXT, size=11),
     margin=dict(l=20, r=20, t=40, b=20),
-    xaxis=dict(gridcolor=BORDER, tickfont=dict(color=DIM)),
-    yaxis=dict(gridcolor=BORDER, tickfont=dict(color=DIM)),
 )
+
+# Reusable axis style — apply individually per chart to avoid keyword conflicts
+AXIS_STYLE = dict(gridcolor=BORDER, tickfont=dict(color=DIM), linecolor=BORDER)
 
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
