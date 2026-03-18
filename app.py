@@ -50,6 +50,13 @@ CYAN      = "#0e7490"
 TEAL      = "#0d6e6e"
 YELLOW    = "#7d6608"
 
+SIDEBAR_BG      = "#1a2744"
+SIDEBAR_BORDER  = "#243156"
+SIDEBAR_TEXT    = "#c8d4f0"
+SIDEBAR_DIM     = "#6b88c4"
+SIDEBAR_INPUT   = "#243156"
+SIDEBAR_INPUT_BORDER = "#344573"
+
 SCENARIO_COLORS = [RED, BLUE, PURPLE, ORANGE, TEAL, CYAN]
 
 PLOTLY_BASE = dict(
@@ -62,7 +69,6 @@ PLOTLY_BASE = dict(
 AXIS_STYLE = dict(
     gridcolor=BORDER,
     linecolor=BORDER,
-    tickfont=dict(color=DIM, size=10),
     title_font=dict(color=TEXT, size=11),
     zerolinecolor=BORDER,
 )
@@ -79,8 +85,19 @@ html, body, [class*="css"] {{
     background-color: {BG};
 }}
 [data-testid="stSidebar"] {{
-    background-color: {BG2};
-    border-right: 1px solid {BORDER};
+    background-color: {SIDEBAR_BG};
+    border-right: 1px solid {SIDEBAR_BORDER};
+}}
+[data-testid="stSidebar"] * {{
+    color: {SIDEBAR_TEXT} !important;
+}}
+[data-testid="stSidebar"] input {{
+    background: {SIDEBAR_INPUT} !important;
+    border-color: {SIDEBAR_INPUT_BORDER} !important;
+    color: {SIDEBAR_TEXT} !important;
+}}
+[data-testid="stSidebar"] [data-baseweb="radio"] label {{
+    color: {SIDEBAR_TEXT} !important;
 }}
 [data-testid="metric-container"] {{
     background: {BG2};
