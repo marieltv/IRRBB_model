@@ -498,7 +498,7 @@ with tab3:
             font=dict(color=DIM, size=11),
         ),
         xaxis=dict(**AXIS_STYLE, title="Δ EVE contribution (USD M)"),
-        yaxis=dict(**AXIS_STYLE, tickfont=dict(size=10, color=TEXT)),
+        yaxis=dict(**AXIS_STYLE),
         showlegend=False,
     )
     st.plotly_chart(fig4, use_container_width=True)
@@ -561,7 +561,7 @@ with tab4:
             font=dict(color=DIM, size=11),
         ),
         xaxis=dict(**AXIS_STYLE, title="Δ EVE contribution (USD M)"),
-        yaxis=dict(**AXIS_STYLE, tickfont=dict(size=9, color=TEXT)),
+        yaxis=dict(**AXIS_STYLE),
         legend=dict(
             font=dict(size=10), bgcolor=BG2,
             bordercolor=BORDER, borderwidth=1,
