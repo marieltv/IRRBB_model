@@ -27,7 +27,6 @@ from src.yield_curve import YieldCurve  # noqa: E402
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="IRRBB Model — BCBS 368",
-    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -60,7 +59,7 @@ SIDEBAR_INPUT_BORDER = "#344573"
 SCENARIO_COLORS = [RED, BLUE, PURPLE, ORANGE, TEAL, CYAN]
 
 PLOTLY_BASE = dict(
-    paper_bgcolor=BG2,
+    paper_bgcolor=BG,
     plot_bgcolor=BG,
     font=dict(family="'IBM Plex Sans', Arial, sans-serif", color=TEXT, size=11),
     margin=dict(l=20, r=20, t=44, b=20),
@@ -100,7 +99,7 @@ html, body, [class*="css"] {{
     color: {SIDEBAR_TEXT} !important;
 }}
 [data-testid="metric-container"] {{
-    background: {BG2};
+    background: {BG};
     border: 1px solid {BORDER};
     border-top: 3px solid {BLUE};
     padding: 14px 16px;
