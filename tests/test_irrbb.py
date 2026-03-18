@@ -1,5 +1,5 @@
 """
-tests/test_irrbb.py  
+tests/test_irrbb.py
 """
 import os
 import sys
