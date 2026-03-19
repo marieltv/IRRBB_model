@@ -1,4 +1,4 @@
-# IRRBB Model — Basel III / BCBS 368
+# IRRBB Regulatory Model — EVE & NII Sensitivity · Basel III / BCBS 368
 
 [![CI](https://github.com/marieltv/IRRBB_model/actions/workflows/ci.yaml/badge.svg)](https://github.com/marieltv/IRRBB_model/actions)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)
